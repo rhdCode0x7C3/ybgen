@@ -1,0 +1,8 @@
+lib: [
+  "_build/install/default/lib/ybgen/META"
+  "_build/install/default/lib/ybgen/dune-package"
+  "_build/install/default/lib/ybgen/opam"
+]
+bin: [
+  "_build/install/default/bin/ybgen"
+]
