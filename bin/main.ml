@@ -1,1 +1,3 @@
-let () = print_endline "Hello, World!"
+    open Yaml
+
+        let () = Yaml.of_string "foo"

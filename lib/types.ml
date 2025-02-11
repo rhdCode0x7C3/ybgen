@@ -34,8 +34,4 @@ type module_common = {
 }
 
 type module_t = { common : module_common; specific : module_specific }
-
-type block =
-  | Left of module_t list
-  | Center of module_t list
-  | Right of module_t list
+type font = { family : string; style : string; size : float }

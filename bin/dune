@@ -1,4 +1,4 @@
 (executable
  (public_name ybgen)
  (name main)
- (libraries ybgen))
+ (libraries ybgen yaml))
