@@ -1,0 +1,19 @@
+# Build files
+_build/
+*.install
+
+# opam local switch
+_opam/
+.opam/
+
+# merlin files (if you still use them)
+.merlin
+
+# editor files
+.vscode/
+.idea/
+*.swp
+*~
+
+# os files
+.DS_Store
