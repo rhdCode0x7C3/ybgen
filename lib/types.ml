@@ -1,37 +1,42 @@
-type colour = int
+(*Decorations*)
+type line = { size : float; color : Common.colour }
+type d_border = { size : float option; color : Common.colour }
 
-type base16_colours = {
-  base00 : colour;
-  base01 : colour;
-  base02 : colour;
-  base03 : colour;
-  base04 : colour;
-  base05 : colour;
-  base06 : colour;
-  base07 : colour;
-  base08 : colour;
-  base09 : colour;
-  base0A : colour;
-  base0B : colour;
-  base0C : colour;
-  base0D : colour;
-  base0E : colour;
-  base0F : colour;
+type decoration =
+  | Background of Common.colour
+  | Underline of line
+  | Overline of line
+  | Border of d_border
+  | Stack of decoration list
+
+(*Particles*)
+type particle_common = {
+  left_margin : float option;
+  right_margin : float option;
+  margin : float option;
+  font : Common.font option;
+  font_shaping : Common.font_shaping option;
+  foreground : Common.colour option;
+  on_click : string option;
+  on_click_left : string option;
+  on_click_right : string option;
+  on_click_middle : string option;
+  on_click_wheel_up : string option;
+  on_click_wheel_down : string option;
+  on_click_previous : string option;
+  on_click_next : string option;
+  deco : decoration option;
 }
 
-let colour_of_hex hex = int_of_string hex
-let hex_of_colour colour : string = Printf.sprintf "#%06x" colour
+type particle =
+  | String of { text : string; max : float option }
+  | Empty
+  | List of {
+      items : particle list;
+      left_spacing : float option;
+      right_spacing : float option;
+      spacing : float option;
+    }
+  | Items of particle list
 
-type clock_config = { format : string; time_zone : string option }
-type module_specific = Clock of clock_config
-
-type module_common = {
-  font : string option;
-  fg_colour : colour option;
-  bg_colour : colour option;
-  margin : int option;
-  padding : int option;
-}
-
-type module_t = { common : module_common; specific : module_specific }
-type font = { family : string; style : string; size : float }
+type particle_t = { common : particle_common; particle : particle }

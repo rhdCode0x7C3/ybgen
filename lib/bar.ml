@@ -1,44 +1,32 @@
-open Types
-
-type location = Top | Bottom
-
-type layer =
-  | Overlay of string
-  | Top of string
-  | Bottom of string
-  | Background of string
-
-type border = {
-  left_width : int option;
-  right_width : int option;
-  top_width : int option;
-  bottom_width : int option;
-  width : int option;
-  color : colour;
-  left_margin : int option;
-  right_margin : int option;
-  top_margin : int option;
-  bottom_margin : int option;
-  margin : int option;
+type b_border = {
+  left_width : float option;
+  right_width : float option;
+  top_width : float option;
+  bottom_width : float option;
+  width : float option;
+  color : Common.colour option;
+  left_margin : float option;
+  right_margin : float option;
+  top_margin : float option;
+  bottom_margin : float option;
+  margin : float option;
 }
 
 type bar = {
-  height : int;
-  location : location;
-  background : colour;
+  height : float;
+  location : [ `Top | `Bottom ];
+  background : Common.colour;
   monitor : string option;
-  layer : layer option;
-  left_spacing : int option;
-  right_spacing : int option;
-  spacing : int option;
-  left_margin : int option;
-  right_margin : int option;
-  margin : int option;
-  border : border option;
-  font : font option;
-  foreground : colour option;
-  trackpad_sensitivity : int option;
-  left : module_t list option;
-  center : module_t list option;
-  right : module_t list option;
+  layer : [ `Overlay | `Top | `Bottom | `Background ] option;
+  left_spacing : float option;
+  right_spacing : float option;
+  spacing : float option;
+  left_margin : float option;
+  right_margin : float option;
+  margin : float option;
+  border : b_border option;
+  font : Common.font option;
+  font_shaping : Common.font_shaping option;
+  foreground : Common.colour option;
+  trackpad_sensitivity : float option;
 }

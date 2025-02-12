@@ -1,27 +1,30 @@
-(*Internal conversions*)
+(*floaternal conversions*)
 let colour_of_hex hex = int_of_string hex
 let hex_of_colour colour : string = Printf.sprintf "#%06x" colour
 
 (*Yaml conversions*)
-let yaml_of_colour (c : Types.colour) = `String (hex_of_colour c)
+let yaml_of_colour (c : Common.colour) = `String (hex_of_colour c)
 
-let yaml_of_font (f : Types.font) =
+let yaml_of_font (f : Common.font) =
   `O
     [
       ("family", `String f.family);
       ("style", `String f.style);
-      ("size", `Int f.size);
+      ("size", `Float f.size);
     ]
 
-let yaml_of_line (l : Types.line) =
-  `O [ ("size", `Int l.size); ("color", yaml_of_colour l.color) ]
+let yaml_of_font_shaping (fs : Common.font_shaping) =
+  `String (match fs with Full -> "full" | None -> "none")
 
-let yaml_of_border (b : Types.border) =
+let yaml_of_line (l : Types.line) =
+  `O [ ("size", `Float l.size); ("color", yaml_of_colour l.color) ]
+
+let yaml_of_d_border (b : Types.d_border) =
   `O
     (List.filter_map
        (fun x -> x)
        [
-         Option.map (fun s -> ("size", `Int s)) b.size;
+         Option.map (fun s -> ("size", `Float s)) b.size;
          Some ("color", yaml_of_colour b.color);
        ])
 
@@ -30,7 +33,7 @@ let rec yaml_of_decoration (d : Types.decoration) =
   | Background v -> `O [ ("background", yaml_of_colour v) ]
   | Underline v -> `O [ ("underline", yaml_of_line v) ]
   | Overline v -> `O [ ("overline", yaml_of_line v) ]
-  | Border v -> `O [ ("border", yaml_of_border v) ]
+  | Border v -> `O [ ("border", yaml_of_d_border v) ]
   | Stack d -> `O [ ("stack", `A (List.map yaml_of_decoration d)) ]
 
 let yaml_of_particle_common (pc : Types.particle_common) =
@@ -38,11 +41,14 @@ let yaml_of_particle_common (pc : Types.particle_common) =
     (List.filter_map
        (fun x -> x)
        [
-         Option.map (fun v -> ("left-margin", `Int v)) pc.left_margin;
-         Option.map (fun v -> ("right-margin", `Int v)) pc.right_margin;
-         Option.map (fun v -> ("margin", `Int v)) pc.margin;
-         Option.map (fun v -> ("margin", `Int v)) pc.margin;
+         Option.map (fun v -> ("left-margin", `Float v)) pc.left_margin;
+         Option.map (fun v -> ("right-margin", `Float v)) pc.right_margin;
+         Option.map (fun v -> ("margin", `Float v)) pc.margin;
+         Option.map (fun v -> ("margin", `Float v)) pc.margin;
          Option.map (fun v -> ("font", yaml_of_font v)) pc.font;
+         Option.map
+           (fun v -> ("font_shaping", yaml_of_font_shaping v))
+           pc.font_shaping;
          Option.map (fun v -> ("foreground", yaml_of_colour v)) pc.foreground;
          Option.map (fun v -> ("on-click", `String v)) pc.on_click;
          Option.map (fun v -> ("on-click-left", `String v)) pc.on_click_left;
@@ -70,7 +76,7 @@ let rec yaml_of_particle (p : Types.particle) =
            (fun x -> x)
            [
              Some ("text", `String text);
-             Option.map (fun m -> ("max", `Int m)) max;
+             Option.map (fun m -> ("max", `Float m)) max;
            ])
   | Empty -> `O []
   | List { items; left_spacing; right_spacing; spacing } ->
@@ -79,16 +85,16 @@ let rec yaml_of_particle (p : Types.particle) =
            (fun x -> x)
            [
              Some (yaml_of_items items);
-             Option.map (fun ls -> ("left-spacing", `Int ls)) left_spacing;
-             Option.map (fun rs -> ("right-spacing", `Int rs)) right_spacing;
-             Option.map (fun s -> ("spacing", `Int s)) spacing;
+             Option.map (fun ls -> ("left-spacing", `Float ls)) left_spacing;
+             Option.map (fun rs -> ("right-spacing", `Float rs)) right_spacing;
+             Option.map (fun s -> ("spacing", `Float s)) spacing;
            ])
   | Items i -> `O [ yaml_of_items i ]
 
 let yaml_of_particle_t (pt : Types.particle_t) =
   `O [ yaml_of_particle_common pt.common; yaml_of_particle pt.particle ]
 
-let yaml_of_module_common (mc : Types.module_common) =
+let yaml_of_module_common (mc : Common.module_common) =
   `O
     (List.filter_map
        (fun x -> x)
@@ -96,6 +102,6 @@ let yaml_of_module_common (mc : Types.module_common) =
          Option.map (fun v -> ("font", yaml_of_font v)) mc.font;
          Option.map (fun v -> ("fg-color", yaml_of_colour v)) mc.fg_colour;
          Option.map (fun v -> ("bg-color", yaml_of_colour v)) mc.bg_colour;
-         Option.map (fun v -> ("margin", `Int v)) mc.margin;
-         Option.map (fun v -> ("padding", `Int v)) mc.padding;
+         Option.map (fun v -> ("margin", `Float v)) mc.margin;
+         Option.map (fun v -> ("padding", `Float v)) mc.padding;
        ])

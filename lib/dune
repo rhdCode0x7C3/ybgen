@@ -1,2 +1,4 @@
 (library
- (name ybgen))
+ (name ybgen)
+ (public_name ybgen)
+ (libraries yaml))
